@@ -1,0 +1,166 @@
+LIFT Calculator Test - Scenario 2
+
+INPUTS
+Start Year,2022
+Gross Receipts,"$110,000"
+Net Income,"$50,000"
+
+CONSTANTS / RATES
+BIRT Credit Rate,60%,Applied to BIRT Net Income portion
+NPT Estimated Rate,50%,For estimated payments
+
+TAX RATES BY YEAR
+Year,BIRT NI Rate,BIRT GR Rate,NPT Rate,Exemption
+2022,5.99%,0.1415%,3.79%,"$100,000"
+2023,5.81%,0.1410%,3.75%,"$100,000"
+2024,5.81%,0.1415%,3.75%,"$100,000"
+2025,5.71%,0.1410%,3.74%,$0
+2026,5.65%,0.1395%,3.74%,$0
+2027,5.60%,0.1390%,3.73%,$0
+
+FORMULAS
+
+TAX LIABILITY FORMULAS:
+Taxable Gross Receipts,"= MAX(0, Gross Receipts - Exemption)"
+Statutory Deduction,"= (Net Income / Gross Receipts) × MIN(Gross Receipts, Exemption)"
+Taxable Net Income (BIRT),"= MAX(0, Net Income - Statutory Deduction)"
+Taxable Net Income (NPT),"= Net Income (full amount, no exemption)"
+
+BIRT (Gross Receipts),= Taxable GR × BIRT GR Rate
+BIRT (Net Income),= Taxable NI (BIRT) × BIRT NI Rate
+Total BIRT,= BIRT (GR) + BIRT (NI)
+
+NPT (before credit),= Taxable NI (NPT) × NPT Rate
+BIRT Credit,= BIRT (Net Income) × 60%
+NPT (after credit),"= MAX(0, NPT (before credit) - BIRT Credit)"
+
+Total Tax Liability,= Total BIRT + NPT (after credit)
+
+CASH FLOW FORMULAS (paid in April of following year):
+Tax Due,= Prior Year Total Tax Liability
+Est. BIRT,= Prior Year BIRT × 100% (unless grace year)
+Est. NPT,= Prior Year NPT (after credit) × 50%
+Prior Year Adjustment,= -(Est. BIRT + Est. NPT paid in prior filing)
+Total Cash Outlay,= Tax Due + Est. BIRT + Est. NPT + Adjustment
+
+GRACE YEAR RULES:
+First Year Grace,No Est. BIRT if first year with actual BIRT liability
+Exemption Removal Grace,No Est. BIRT in 2026 if never paid BIRT during exemption period
+
+================================================================================
+YEAR-BY-YEAR CALCULATIONS
+================================================================================
+
+TAX YEAR 2022
+----------------------------------------
+Calculation,Formula,Value
+Exemption,,"$100,000"
+Taxable GR,"MAX(0, 110,000 - 100,000)","$10,000.00"
+Statutory Deduction,"(50,000/110,000) × 100,000","$45,454.55"
+Taxable NI (BIRT),"MAX(0, 50,000 - 45,454.55)","$4,545.45"
+Taxable NI (NPT),"50,000 (no deduction)","$50,000.00"
+
+BIRT (GR),"10,000.00 × 0.1415%",$14.15
+BIRT (NI),"4,545.45 × 5.99%",$272.27
+Total BIRT,14.15 + 272.27,$286.42
+
+NPT (before credit),"50,000.00 × 3.79%","$1,895.00"
+BIRT Credit (60%),272.27 × 60%,$163.36
+NPT (after credit),"MAX(0, 1,895.00 - 163.36)","$1,731.64"
+
+TOTAL TAX LIABILITY,"286.42 + 1,731.64","$2,018.06"
+
+TAX YEAR 2023
+----------------------------------------
+Calculation,Formula,Value
+Exemption,,"$100,000"
+Taxable GR,"MAX(0, 110,000 - 100,000)","$10,000.00"
+Statutory Deduction,"(50,000/110,000) × 100,000","$45,454.55"
+Taxable NI (BIRT),"MAX(0, 50,000 - 45,454.55)","$4,545.45"
+Taxable NI (NPT),"50,000 (no deduction)","$50,000.00"
+
+BIRT (GR),"10,000.00 × 0.1410%",$14.10
+BIRT (NI),"4,545.45 × 5.81%",$264.09
+Total BIRT,14.10 + 264.09,$278.19
+
+NPT (before credit),"50,000.00 × 3.75%","$1,875.00"
+BIRT Credit (60%),264.09 × 60%,$158.45
+NPT (after credit),"MAX(0, 1,875.00 - 158.45)","$1,716.55"
+
+TOTAL TAX LIABILITY,"278.19 + 1,716.55","$1,994.74"
+
+TAX YEAR 2024
+----------------------------------------
+Calculation,Formula,Value
+Exemption,,"$100,000"
+Taxable GR,"MAX(0, 110,000 - 100,000)","$10,000.00"
+Statutory Deduction,"(50,000/110,000) × 100,000","$45,454.55"
+Taxable NI (BIRT),"MAX(0, 50,000 - 45,454.55)","$4,545.45"
+Taxable NI (NPT),"50,000 (no deduction)","$50,000.00"
+
+BIRT (GR),"10,000.00 × 0.1415%",$14.15
+BIRT (NI),"4,545.45 × 5.81%",$264.09
+Total BIRT,14.15 + 264.09,$278.24
+
+NPT (before credit),"50,000.00 × 3.75%","$1,875.00"
+BIRT Credit (60%),264.09 × 60%,$158.45
+NPT (after credit),"MAX(0, 1,875.00 - 158.45)","$1,716.55"
+
+TOTAL TAX LIABILITY,"278.24 + 1,716.55","$1,994.79"
+
+TAX YEAR 2025
+----------------------------------------
+Calculation,Formula,Value
+Exemption,,$0
+Taxable GR,"MAX(0, 110,000 - 0)","$110,000.00"
+Statutory Deduction,No exemption in 2025,$0.00
+Taxable NI (BIRT),"MAX(0, 50,000 - 0.00)","$50,000.00"
+Taxable NI (NPT),"50,000 (no deduction)","$50,000.00"
+
+BIRT (GR),"110,000.00 × 0.1410%",$155.10
+BIRT (NI),"50,000.00 × 5.71%","$2,855.00"
+Total BIRT,"155.10 + 2,855.00","$3,010.10"
+
+NPT (before credit),"50,000.00 × 3.74%","$1,870.00"
+BIRT Credit (60%),"2,855.00 × 60%","$1,713.00"
+NPT (after credit),"MAX(0, 1,870.00 - 1,713.00)",$157.00
+
+TOTAL TAX LIABILITY,"3,010.10 + 157.00","$3,167.10"
+
+TAX YEAR 2026
+----------------------------------------
+Calculation,Formula,Value
+Exemption,,$0
+Taxable GR,"MAX(0, 110,000 - 0)","$110,000.00"
+Statutory Deduction,No exemption in 2026,$0.00
+Taxable NI (BIRT),"MAX(0, 50,000 - 0.00)","$50,000.00"
+Taxable NI (NPT),"50,000 (no deduction)","$50,000.00"
+
+BIRT (GR),"110,000.00 × 0.1395%",$153.45
+BIRT (NI),"50,000.00 × 5.65%","$2,825.00"
+Total BIRT,"153.45 + 2,825.00","$2,978.45"
+
+NPT (before credit),"50,000.00 × 3.74%","$1,867.50"
+BIRT Credit (60%),"2,825.00 × 60%","$1,695.00"
+NPT (after credit),"MAX(0, 1,867.50 - 1,695.00)",$172.50
+
+TOTAL TAX LIABILITY,"2,978.45 + 172.50","$3,150.95"
+
+TAX YEAR 2027
+----------------------------------------
+Calculation,Formula,Value
+Exemption,,$0
+Taxable GR,"MAX(0, 110,000 - 0)","$110,000.00"
+Statutory Deduction,No exemption in 2027,$0.00
+Taxable NI (BIRT),"MAX(0, 50,000 - 0.00)","$50,000.00"
+Taxable NI (NPT),"50,000 (no deduction)","$50,000.00"
+
+BIRT (GR),"110,000.00 × 0.1390%",$152.90
+BIRT (NI),"50,000.00 × 5.60%","$2,800.00"
+Total BIRT,"152.90 + 2,800.00","$2,952.90"
+
+NPT (before credit),"50,000.00 × 3.73%","$1,865.00"
+BIRT Credit (60%),"2,800.00 × 60%","$1,680.00"
+NPT (after credit),"MAX(0, 1,865.00 - 1,680.00)",$185.00
+
+TOTAL TAX LIABILITY,"2,952.90 + 185.00","$3,137.90"

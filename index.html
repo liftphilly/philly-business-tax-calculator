@@ -1,0 +1,1728 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BIRT Tax Calculator - LIFT Philly</title>
+    <meta name="description" content="Calculate how the BIRT exemption removal will affect your Philadelphia small business taxes in 2026 and beyond.">
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://liftphilly.org/calculator/">
+    <meta property="og:title" content="BIRT Tax Calculator - LIFT Philly">
+    <meta property="og:description" content="Calculate how the BIRT exemption removal will affect your Philadelphia small business taxes in 2026 and beyond.">
+    <meta property="og:image" content="https://liftphilly.org/og-image.png">
+
+    <!-- Privacy-friendly analytics by Plausible -->
+    <script async src="https://plausible.io/js/pa-bEPTzuGWc7ZFrRQnG7Cg6.js"></script>
+    <script>
+      window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};
+      plausible.init()
+    </script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --navy: #0f172a;
+            --navy-light: #1e293b;
+            --gold: #fbbf24;
+            --gold-dark: #f59e0b;
+            --cream: #fefce8;
+            --text: #334155;
+            --text-light: #64748b;
+            --white: #ffffff;
+            --red: #dc2626;
+            --red-dark: #991b1b;
+            --green: #16a34a;
+            --gradient: linear-gradient(160deg, #0f172a 0%, #1e293b 50%, #1a365d 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: var(--white);
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        /* Navigation */
+        .nav {
+            background: var(--navy);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            overflow: visible;
+        }
+
+        .nav .container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            overflow: visible;
+        }
+
+        .nav-brand {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--white);
+            text-decoration: none;
+        }
+
+        .nav-brand span {
+            color: var(--gold);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--gold);
+        }
+
+        .nav-links a.active {
+            color: var(--gold);
+        }
+
+        .nav-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .nav-toggle span {
+            display: block;
+            width: 24px;
+            height: 2px;
+            background: var(--white);
+            margin: 5px 0;
+            transition: 0.3s;
+        }
+
+        /* Translate dropdown in nav */
+        .nav-translate {
+            position: relative;
+        }
+
+        .nav-translate-btn {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.3);
+            border-radius: 6px;
+            padding: 6px 12px;
+            color: rgba(255,255,255,0.9);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .nav-translate-btn:hover {
+            border-color: var(--gold);
+            color: var(--gold);
+        }
+
+        .nav-translate-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .nav-translate-btn .chevron {
+            width: 12px;
+            height: 12px;
+            transition: transform 0.2s;
+        }
+
+        .nav-translate.open .nav-translate-btn .chevron {
+            transform: rotate(180deg);
+        }
+
+        .nav-translate-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 8px;
+            background: var(--navy-light);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 8px;
+            padding: 12px 0;
+            min-width: 220px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-8px);
+            transition: all 0.2s;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            z-index: 1000;
+        }
+
+        .nav-translate.open .nav-translate-dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .nav-translate-dropdown .lang-list {
+            max-height: 280px;
+            overflow-y: auto;
+        }
+
+        .nav-translate-dropdown button {
+            display: block;
+            width: 100%;
+            padding: 10px 16px;
+            background: none;
+            border: none;
+            color: rgba(255,255,255,0.8);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+
+        .nav-translate-dropdown button:hover {
+            background: rgba(251,191,36,0.15);
+            color: var(--gold);
+        }
+
+        .nav-translate-dropdown .help-divider {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            margin: 8px 0;
+        }
+
+        .nav-translate-dropdown .help-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            color: var(--gold);
+            font-size: 0.85rem;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .nav-translate-dropdown .help-link:hover {
+            opacity: 0.8;
+        }
+
+        .nav-translate-dropdown .help-link svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        #google_translate_element {
+            display: none !important;
+        }
+
+        .goog-te-banner-frame {
+            display: none !important;
+        }
+
+        .skiptranslate {
+            display: none !important;
+        }
+
+        .goog-te-spinner-pos {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            .nav .container {
+                flex-wrap: wrap;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: var(--navy-light);
+                flex-direction: column;
+                gap: 0;
+                padding: 16px 0;
+            }
+
+            .nav-links.open {
+                display: flex;
+            }
+
+            .nav-links li {
+                padding: 0;
+            }
+
+            .nav-links a {
+                display: block;
+                padding: 12px 24px;
+            }
+
+            .nav-toggle {
+                display: block;
+            }
+
+            .nav-toggle.open span:nth-child(1) {
+                transform: rotate(45deg) translate(5px, 5px);
+            }
+
+            .nav-toggle.open span:nth-child(2) {
+                opacity: 0;
+            }
+
+            .nav-toggle.open span:nth-child(3) {
+                transform: rotate(-45deg) translate(5px, -5px);
+            }
+
+            .nav-translate {
+                order: 3;
+                margin-left: auto;
+                margin-right: 8px;
+            }
+
+            .nav-translate-btn span {
+                display: none;
+            }
+
+            .nav-translate-btn {
+                padding: 6px 8px;
+            }
+        }
+
+        /* Hero */
+        .hero {
+            background: var(--gradient);
+            padding: 60px 0 80px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 800;
+            color: var(--white);
+            margin-bottom: 16px;
+        }
+
+        .hero h1 span {
+            color: var(--gold);
+        }
+
+        .hero p {
+            font-size: 1.15rem;
+            color: rgba(255,255,255,0.8);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Calculator Section */
+        .calculator-section {
+            padding: 60px 0;
+            background: linear-gradient(180deg, #f8fafc 0%, var(--white) 100%);
+        }
+
+        .calculator-card {
+            background: var(--white);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 4px 40px rgba(0,0,0,0.08);
+            border: 1px solid rgba(0,0,0,0.05);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .last-updated {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 0.75rem;
+            color: var(--text-light);
+            background: #f1f5f9;
+            padding: 4px 10px;
+            border-radius: 4px;
+            margin-bottom: 12px;
+            text-decoration: none;
+            transition: background 0.2s, color 0.2s;
+        }
+        .last-updated:hover {
+            background: #e2e8f0;
+            color: var(--navy);
+        }
+
+        .calculator-card > .year-section {
+            margin-top: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .form-hint {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            font-size: 1.1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--gold);
+        }
+
+        /* Start Year Picker */
+        .start-year-picker {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .start-year-option {
+            cursor: pointer;
+            overflow: hidden;
+            transition: all 0.3s ease-out;
+            max-height: 60px;
+            opacity: 1;
+        }
+
+        .start-year-option.collapsed {
+            max-height: 0;
+            opacity: 0;
+            margin: 0;
+            padding: 0;
+        }
+
+        .start-year-option input {
+            display: none;
+        }
+
+        .start-year-label {
+            display: block;
+            padding: 14px 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            text-align: center;
+            font-weight: 500;
+            color: var(--text);
+            transition: all 0.2s;
+        }
+
+        .start-year-option input:checked + .start-year-label {
+            border-color: var(--navy);
+            background: var(--white);
+            color: var(--navy);
+            font-weight: 700;
+            box-shadow: inset 0 0 0 2px var(--navy);
+        }
+
+        .start-year-option:hover .start-year-label {
+            border-color: var(--navy);
+        }
+
+        /* Year picker spacing */
+        #year-picker-section {
+            margin-bottom: 24px;
+        }
+
+        #year-continue-btn {
+            margin-top: 16px;
+        }
+
+        /* Collapsed state - question hidden */
+        #year-question.collapsed {
+            display: none;
+        }
+
+        /* Continue button hidden in collapsed state */
+        #year-continue-btn.collapsed {
+            display: none;
+        }
+
+        /* Year section transitions */
+        .year-section {
+            overflow: hidden;
+        }
+
+        .calculator-step {
+            animation: fadeSlideIn 0.3s ease-out;
+        }
+
+        @keyframes fadeSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Year picker collapsed state - margin below selected option */
+        #year-picker.collapsed {
+            margin-bottom: 20px;
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 16px 32px;
+            background: var(--navy);
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: inherit;
+        }
+
+        .calculate-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(15,23,42,0.25);
+        }
+
+        .calculate-btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Results */
+        .results {
+            display: none;
+            margin-top: 40px;
+        }
+
+        .results.visible {
+            display: block;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .results-header h2 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 8px;
+        }
+
+        .scenario-badge {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 100px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .scenario-a {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--red);
+        }
+
+        .scenario-b {
+            background: rgba(251, 191, 36, 0.2);
+            color: var(--gold-dark);
+        }
+
+        /* Adjustment Note */
+        .adjustment-note {
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-bottom: 16px;
+        }
+
+        .adjustment-note p {
+            color: var(--text);
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        /* Run Rate Summary */
+        .run-rate-summary {
+            background: var(--cream);
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .run-rate-summary h3 {
+            color: var(--navy);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .run-rate-amount {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--red);
+            line-height: 1;
+        }
+
+        .run-rate-detail {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-top: 8px;
+        }
+
+        /* Impact Summary */
+        .impact-summary {
+            background: linear-gradient(135deg, var(--navy) 0%, #1a365d 100%);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .impact-summary h3 {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .impact-amount {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--gold);
+            line-height: 1;
+        }
+
+        .impact-detail {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.95rem;
+            margin-top: 12px;
+        }
+
+        .cash-shock-year {
+            color: var(--gold);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-top: 8px;
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: relative;
+            text-align: center;
+            margin: 24px 0 32px;
+        }
+
+        .scroll-fade {
+            position: absolute;
+            top: -40px;
+            left: -32px;
+            right: -32px;
+            height: 40px;
+            background: linear-gradient(to bottom, transparent, var(--white));
+            pointer-events: none;
+        }
+
+        .scroll-link {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: var(--navy);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            padding: 12px 24px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .scroll-link:hover {
+            background: rgba(15, 23, 42, 0.05);
+        }
+
+        .bounce-arrow {
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(6px);
+            }
+            60% {
+                transform: translateY(3px);
+            }
+        }
+
+        /* Warning Box */
+        .warning-box {
+            background: rgba(251, 191, 36, 0.1);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 32px;
+        }
+
+        .warning-box h4 {
+            color: var(--gold-dark);
+            font-size: 1rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .warning-box p {
+            color: var(--text);
+            font-size: 0.95rem;
+        }
+
+        /* Timeline */
+        .timeline-section {
+            margin-top: 32px;
+        }
+
+        .timeline-section h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .year-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border-left: 4px solid var(--navy);
+        }
+
+        .year-card.shock-year {
+            border-left-color: var(--red);
+            background: rgba(220, 38, 38, 0.05);
+        }
+
+        .year-card.baseline {
+            border-left-color: var(--green);
+        }
+
+        .year-card.inactive {
+            opacity: 0.5;
+            border-left-color: #94a3b8;
+        }
+
+        .year-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .year-label {
+            font-weight: 700;
+            color: var(--navy);
+            font-size: 1.1rem;
+        }
+
+        .year-badge {
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 100px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .year-badge.baseline {
+            background: rgba(22, 163, 74, 0.1);
+            color: var(--green);
+        }
+
+        .year-badge.shock {
+            background: rgba(220, 38, 38, 0.1);
+            color: var(--red);
+        }
+
+        .year-badge.filed {
+            background: rgba(100, 116, 139, 0.1);
+            color: var(--text-light);
+        }
+
+        .year-badge.inactive {
+            background: rgba(100, 116, 139, 0.1);
+            color: var(--text-light);
+        }
+
+        .year-total {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 16px;
+        }
+
+        .year-breakdown {
+            display: grid;
+            gap: 8px;
+        }
+
+        .breakdown-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .breakdown-row.subtotal {
+            color: var(--text);
+            font-weight: 500;
+            padding-top: 8px;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .breakdown-row.total {
+            color: var(--navy);
+            font-weight: 700;
+            font-size: 1rem;
+            padding-top: 12px;
+            margin-top: 4px;
+            border-top: 2px solid var(--navy);
+        }
+
+        /* Tax Boxes */
+        .tax-boxes {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .tax-box {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 16px;
+            border: 1px solid #e5e7eb;
+        }
+
+        .tax-box.tax-due-box {
+            background: #fefce8;
+            border-color: var(--gold);
+        }
+
+        .tax-box-header {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--navy);
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .tax-due-box .tax-box-header {
+            border-bottom-color: var(--gold);
+        }
+
+        /* Breakdown Sections */
+        .breakdown-section {
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .breakdown-section:last-of-type {
+            margin-bottom: 16px;
+        }
+
+        .breakdown-section-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--navy);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .section-hint {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            margin-top: -8px;
+            margin-bottom: 12px;
+        }
+
+        .breakdown-row.credit-row {
+            color: var(--green);
+        }
+
+        .breakdown-row.zero-row {
+            color: var(--text-light);
+            opacity: 0.7;
+        }
+
+        .grace-note {
+            font-style: italic;
+            font-size: 0.85em;
+            opacity: 0.8;
+        }
+
+        /* Estimated Quote Section */
+        .estimated-quote {
+            background: linear-gradient(135deg, var(--navy) 0%, #1a365d 100%);
+            border-radius: 16px;
+            padding: 32px;
+            margin-top: 32px;
+            text-align: center;
+        }
+
+        .estimated-quote h4 {
+            color: var(--gold);
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .estimated-quote p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.05rem;
+            margin-bottom: 8px;
+        }
+
+        .estimated-quote .quote-cta {
+            color: var(--gold);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-top: 20px;
+            margin-bottom: 16px;
+        }
+
+        .estimated-quote .quote-btn {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--navy);
+            padding: 14px 28px;
+            border-radius: 8px;
+            font-weight: 700;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .estimated-quote .quote-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(251, 191, 36, 0.4);
+        }
+
+        .formula {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: var(--text-light);
+            background: rgba(0,0,0,0.03);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: var(--cream);
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .cta-section h2 {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--navy);
+            margin-bottom: 16px;
+        }
+
+        .cta-section p {
+            color: var(--text);
+            max-width: 500px;
+            margin: 0 auto 24px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-primary {
+            background: var(--navy);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(15,23,42,0.25);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--navy);
+            border: 2px solid var(--navy);
+        }
+
+        .btn-outline:hover {
+            background: var(--navy);
+            color: var(--white);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--navy);
+            color: var(--white);
+            padding: 32px 0;
+            text-align: center;
+        }
+
+        .footer-brand {
+            font-size: 1.25rem;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .footer-brand span {
+            color: var(--gold);
+        }
+
+        footer p {
+            color: rgba(255,255,255,0.6);
+            font-size: 0.85rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .calculator-card {
+                padding: 24px;
+            }
+
+            .impact-amount {
+                font-size: 2.25rem;
+            }
+
+            .year-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+        }
+    </style>
+
+    <!-- Google Translate (hidden, triggered by custom dropdown) -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'es,zh-CN,vi,ko,ru,ar,fr,pt,hi,tl',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+
+        function translatePage(langCode) {
+            var domain = window.location.hostname;
+            document.cookie = 'googtrans=/en/' + langCode + '; path=/; domain=' + domain;
+            document.cookie = 'googtrans=/en/' + langCode + '; path=/';
+            window.location.reload();
+        }
+
+        function toggleTranslateDropdown() {
+            document.querySelector('.nav-translate').classList.toggle('open');
+        }
+
+        function toggleNav() {
+            document.querySelector('.nav-toggle').classList.toggle('open');
+            document.querySelector('.nav-links').classList.toggle('open');
+        }
+
+        document.addEventListener('click', function(e) {
+            var translateDropdown = document.querySelector('.nav-translate');
+            if (translateDropdown && !translateDropdown.contains(e.target)) {
+                translateDropdown.classList.remove('open');
+            }
+        });
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container">
+            <a href="/" class="nav-brand">LIFT <span>Philly</span></a>
+            <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/filing-your-birt.html">Filing Your BIRT</a></li>
+                <li><a href="/#join">Join Coalition</a></li>
+            </ul>
+            <div class="nav-translate">
+                <button class="nav-translate-btn" onclick="toggleTranslateDropdown()">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129" />
+                    </svg>
+                    <span>Translate</span>
+                    <svg class="chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div class="nav-translate-dropdown">
+                    <div class="lang-list">
+                        <button onclick="translatePage('en')">English</button>
+                        <button onclick="translatePage('es')">Español</button>
+                        <button onclick="translatePage('zh-CN')">中文 (简体)</button>
+                        <button onclick="translatePage('vi')">Tiếng Việt</button>
+                        <button onclick="translatePage('ko')">한국어</button>
+                        <button onclick="translatePage('ru')">Русский</button>
+                        <button onclick="translatePage('ar')">العربية</button>
+                        <button onclick="translatePage('fr')">Français</button>
+                        <button onclick="translatePage('pt')">Português</button>
+                        <button onclick="translatePage('hi')">हिन्दी</button>
+                        <button onclick="translatePage('tl')">Filipino</button>
+                    </div>
+                    <div class="help-divider"></div>
+                    <a href="mailto:hello@liftphilly.org?subject=Help%20Translate%20LIFT%20Philly" class="help-link">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        Help us translate
+                    </a>
+                </div>
+            </div>
+            <div id="google_translate_element"></div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <h1>Know Before <span>You File</span></h1>
+            <p>See how the removal of the $100K BIRT exemption will affect your Philadelphia small business starting in 2026.</p>
+        </div>
+    </section>
+
+    <!-- Calculator -->
+    <section class="calculator-section">
+        <div class="container">
+            <div class="calculator-card" style="position: relative;">
+                <a href="/calculator/test-results/" class="last-updated">Last updated: Jan 16, 2026 at 7:17 PM</a>
+                <!-- Year Selection (collapsible) -->
+                <div id="year-section" class="year-section">
+                    <!-- Year picker with fan collapse -->
+                    <div id="year-picker-section">
+                        <div id="year-question" class="form-group">
+                            <label class="form-label">What was your first year doing business in Philadelphia?</label>
+                            <p class="form-hint">This must be accurate for the calculator to work correctly</p>
+                        </div>
+                        <div id="year-picker" class="start-year-picker">
+                            <label class="start-year-option" data-year="2022">
+                                <input type="radio" name="startYear" value="2022">
+                                <span class="start-year-label">2022 or earlier</span>
+                            </label>
+                            <label class="start-year-option" data-year="2023">
+                                <input type="radio" name="startYear" value="2023">
+                                <span class="start-year-label">2023</span>
+                            </label>
+                            <label class="start-year-option" data-year="2024">
+                                <input type="radio" name="startYear" value="2024">
+                                <span class="start-year-label">2024</span>
+                            </label>
+                        </div>
+                        <button type="button" id="year-continue-btn" class="calculate-btn" disabled>Continue</button>
+                    </div>
+                </div>
+
+                <!-- Revenue Inputs -->
+                <div id="revenue-section" class="calculator-step" style="display: none;">
+                    <form id="calculator-form">
+                        <div class="form-group">
+                            <label class="form-label">Average Annual Gross Receipts</label>
+                            <p class="form-hint">Your total revenue before expenses</p>
+                            <input type="text" id="grossReceipts" class="form-input" placeholder="$75,000" inputmode="numeric">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Average Annual Net Income</label>
+                            <p class="form-hint">Your business profit after expenses (what you'd report on your taxes)</p>
+                            <input type="text" id="netIncome" class="form-input" placeholder="$50,000" inputmode="numeric">
+                        </div>
+
+                        <div id="income-adjustment-note" class="adjustment-note" style="display: none;">
+                            <p><strong>Note:</strong> Philadelphia Sales and Income Impact Calculation. Your income has been adjusted to equal your gross receipts. Adjust your income if you have separate expenses attributed to just Philadelphia.</p>
+                        </div>
+
+                        <button type="submit" class="calculate-btn">Calculate My Tax Impact</button>
+                    </form>
+                </div>
+
+                <!-- Results -->
+                <div id="results" class="results">
+                    <div class="results-header">
+                        <h2>Your Tax Burden Increase</h2>
+                        <span id="scenario-badge" class="scenario-badge"></span>
+                    </div>
+
+                    <div class="run-rate-summary">
+                        <h3>Your Annual Tax Increase</h3>
+                        <div id="run-rate-amount" class="run-rate-amount"></div>
+                        <p class="run-rate-detail">Every year, ongoing (tax due only, no estimated payments)</p>
+                    </div>
+
+                    <div class="impact-summary">
+                        <h3>Your Shock Year Tax Increase</h3>
+                        <div id="impact-amount" class="impact-amount"></div>
+                        <p id="impact-detail" class="impact-detail"></p>
+                        <p id="cash-shock-year" class="cash-shock-year"></p>
+                    </div>
+
+                    <!-- Scroll indicator -->
+                    <div class="scroll-indicator">
+                        <div class="scroll-fade"></div>
+                        <a href="#timeline-section" class="scroll-link" id="scroll-to-breakdown">
+                            <span>See full breakdown</span>
+                            <svg class="bounce-arrow" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M7 13l5 5 5-5M7 6l5 5 5-5"/>
+                            </svg>
+                        </a>
+                    </div>
+
+                    <div id="warning-box" class="warning-box" style="display: none;">
+                    </div>
+
+                    <div id="timeline-section" class="timeline-section">
+                        <h3>Year-by-Year Breakdown</h3>
+                        <div id="timeline"></div>
+                    </div>
+
+                    <div class="estimated-quote" style="text-align: left;">
+                        <h4 style="text-align: center;">Wait, what are estimated payments?</h4>
+                        <p>Here's the deal: the City wants their money upfront.</p>
+                        <p>Every April, you don't just pay taxes on last year's income — you also pre-pay a chunk of <em>next year's</em> taxes based on what you made this year.</p>
+                        <p style="margin-top: 12px; font-size: 1.1em;"><strong>That means you're fronting the city money that you haven't earned yet.</strong></p>
+                        <p style="margin-top: 12px; color: rgba(255,255,255,0.7);">If your income drops next year, you've already paid based on this year. You'll get it back eventually, but your cash flow takes the hit now.</p>
+                        <div style="text-align: center; margin-top: 24px;">
+                            <a href="/#join" class="quote-btn">Join the Coalition</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Take Action?</h2>
+            <p>Join the coalition fighting for fair tax treatment of Philadelphia's small businesses.</p>
+            <div class="btn-group">
+                <a href="/#join" class="btn btn-primary">Join the Coalition</a>
+                <a href="https://tally.so/r/kd9g8e" class="btn btn-outline" target="_blank">Sign Up to Testify</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-brand">LIFT <span>Philly</span></div>
+            <p>Labor · Individual Enterprises · Family Enterprises · Tax Reform</p>
+        </div>
+    </footer>
+
+    <!-- Load shared tax calculator module (single source of truth) -->
+    <script src="/calculator/tax-calculator.js"></script>
+
+    <script>
+        // Import from shared module
+        const {
+            TAX_RATES,
+            EXEMPTION_BY_YEAR,
+            BIRT_CREDIT_RATE,
+            NPT_ESTIMATED_RATE,
+            formatCurrency,
+            parseCurrency,
+            calculateTaxableAmounts,
+            calculateTaxLiability,
+            calculateCashFlow: sharedCalculateCashFlow
+        } = window.TaxCalculator;
+
+        // Main calculation function
+        function calculate(netIncome, grossReceipts, startYear) {
+            const startYearInt = parseInt(startYear);
+
+            // Calculate tax liabilities for all years (including 2021 for 2022 cash flow)
+            const taxLiabilities = {};
+            for (let year = 2021; year <= 2027; year++) {
+                const businessExisted = year >= startYearInt;
+                taxLiabilities[year] = calculateTaxLiability(netIncome, grossReceipts, year, businessExisted);
+            }
+
+            // Calculate cash flows for all years (starting 2022 now that we have 2021 data)
+            const cashFlows = {};
+            for (let year = 2022; year <= 2027; year++) {
+                cashFlows[year] = sharedCalculateCashFlow(taxLiabilities, year, startYear);
+            }
+
+            // Shock year determination:
+            // If Gross Receipts ≤ $100K: Shock Year = 2027
+            // Else: Shock Year = 2026
+            const shockYear = grossReceipts <= 100000 ? 2027 : 2026;
+
+            // Baseline is always 2024 (last year with exemption)
+            const baseline2024Tax = taxLiabilities[2024];
+
+            // 2025 tax for run rate comparison
+            const tax2025 = taxLiabilities[2025];
+
+            // Shock year cash flow and prior year for comparison
+            const shockCash = cashFlows[shockYear] || { totalCashBurden: 0 };
+            const priorToShockCash = cashFlows[shockYear - 1] || { totalCashBurden: 0 };
+
+            // Annual tax increase = 2025 tax due - 2024 tax due
+            const annualTaxIncrease = tax2025.totalTax - baseline2024Tax.totalTax;
+
+            // Shock year cash increase = shock year cash burden - prior year cash burden
+            const shockCashIncrease = shockCash.totalCashBurden - priorToShockCash.totalCashBurden;
+
+            return {
+                startYear: startYearInt,
+                shockYear,
+                taxLiabilities,
+                cashFlows,
+                baseline2024Tax,
+                annualTaxIncrease,
+                shockCashIncrease,
+                grossReceipts,
+                netIncome
+            };
+        }
+
+        // Render year card with two boxes: Tax Liability and Tax Due for Payment
+        function renderYearCard(taxData, cashData, priorTaxData, isBaseline, isShock, startYear) {
+            const year = taxData.year;
+            const businessExisted = taxData.businessExisted;
+            const cashOutlayYear = year;
+
+            let badgeHtml = '';
+            let cardClass = 'year-card';
+
+            if (!businessExisted) {
+                badgeHtml = '<span class="year-badge inactive">Not in Business</span>';
+                cardClass += ' inactive';
+            } else if (isBaseline) {
+                badgeHtml = '<span class="year-badge baseline">Baseline Year</span>';
+                cardClass += ' baseline';
+            } else if (isShock) {
+                badgeHtml = '<span class="year-badge shock">Shock Year</span>';
+                cardClass += ' shock-year';
+            } else {
+                badgeHtml = '<span class="year-badge filed">Filed Year</span>';
+            }
+
+            if (!businessExisted) {
+                return `
+                    <div class="${cardClass}">
+                        <div class="year-header">
+                            <span class="year-label">Tax Year ${year}</span>
+                            ${badgeHtml}
+                        </div>
+                        <div class="year-total" style="color: var(--text-light);">Business not yet started</div>
+                    </div>
+                `;
+            }
+
+            const exemption = EXEMPTION_BY_YEAR[year];
+            const hasExemption = exemption > 0;
+            const exemptNote = hasExemption ? ' <span style="color: var(--green);">(w/ exemption)</span>' : '';
+
+            // Note for when BIRT estimates are $0
+            const startYearInt = parseInt(startYear);
+            const isFirstYearFiling = priorTaxData && (year - 1 === startYearInt);
+            const isGraceYear = cashData && cashData.isGraceYear;
+            let estBirtNote = '';
+            if (isFirstYearFiling) {
+                estBirtNote = ' <span style="color: var(--gold-dark);">(1st year)</span>';
+            } else if (isGraceYear) {
+                estBirtNote = ' <span style="color: var(--green);">(grace year)</span>';
+            }
+
+            const totalCash = cashData ? cashData.totalCashBurden : taxData.totalTax;
+
+            // Box 1: Tax Liability for this year
+            const taxLiabilityBox = `
+                <div class="tax-box">
+                    <div class="tax-box-header">Tax Liability (${year})</div>
+                    <div class="year-breakdown">
+                        <div class="breakdown-row">
+                            <span>BIRT (Net Income)${exemptNote}</span>
+                            <span>${formatCurrency(taxData.birtNI)}</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span>BIRT (Gross Receipts)${exemptNote}</span>
+                            <span>${formatCurrency(taxData.birtGR)}</span>
+                        </div>
+                        <div class="breakdown-row subtotal">
+                            <span>Total BIRT</span>
+                            <span>${formatCurrency(taxData.birtTotal)}</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span>NPT (before credit)</span>
+                            <span>${formatCurrency(taxData.nptGross)}</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span>BIRT Credit (60%)</span>
+                            <span>-${formatCurrency(taxData.birtCredit)}</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span>NPT After Credit</span>
+                            <span>${formatCurrency(taxData.nptAfterCredit)}</span>
+                        </div>
+                        <div class="breakdown-row total">
+                            <span>Total Tax Liability</span>
+                            <span>${formatCurrency(taxData.totalTax)}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            // Box 2: Tax Due for Payment (paid in April of year+1)
+            let taxDueBox = '';
+            if (cashData && priorTaxData) {
+                const priorExemption = EXEMPTION_BY_YEAR[year - 1];
+                const priorHasExemption = priorExemption > 0;
+                const priorExemptNote = priorHasExemption ? ' <span style="color: var(--green);">(w/ exemption)</span>' : '';
+
+                taxDueBox = `
+                <div class="tax-box tax-due-box">
+                    <div class="tax-box-header">Tax Due for Payment (April ${cashOutlayYear})</div>
+                    <div class="year-breakdown">
+                        <div class="breakdown-row">
+                            <span>Tax Liability from ${year - 1}${priorExemptNote}</span>
+                            <span>${formatCurrency(cashData.taxDue)}</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span>+ Est. BIRT (based on ${year - 1})${estBirtNote}</span>
+                            <span>${formatCurrency(cashData.estBIRT)}</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span>+ Est. NPT (based on ${year - 1})</span>
+                            <span>${formatCurrency(cashData.estNPT)}</span>
+                        </div>
+                        <div class="breakdown-row">
+                            <span>- Prior Year Adjustment</span>
+                            <span>${formatCurrency(cashData.adjustment)}</span>
+                        </div>
+                        <div class="breakdown-row total">
+                            <span>Total Cash Outlay</span>
+                            <span>${formatCurrency(cashData.totalCashBurden)}</span>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }
+
+            return `
+                <div class="${cardClass}">
+                    <div class="year-header">
+                        <span class="year-label">Tax Year ${year}</span>
+                        ${badgeHtml}
+                    </div>
+                    <div class="year-total">${formatCurrency(totalCash)} total cash outlay <span style="font-weight: 400; color: var(--text-light);">(April ${cashOutlayYear})</span></div>
+                    <div class="tax-boxes">
+                        ${taxLiabilityBox}
+                        ${taxDueBox}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Handle form submission
+        document.getElementById('calculator-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            let netIncome = parseCurrency(document.getElementById('netIncome').value);
+            const grossReceipts = parseCurrency(document.getElementById('grossReceipts').value);
+            const startYear = document.querySelector('input[name="startYear"]:checked').value;
+
+            if (netIncome <= 0 || grossReceipts <= 0) {
+                alert('Please enter valid amounts for both fields.');
+                return;
+            }
+
+            // If net income > gross receipts, adjust to equal gross receipts and show note
+            const adjustmentNote = document.getElementById('income-adjustment-note');
+            if (netIncome > grossReceipts) {
+                netIncome = grossReceipts;
+                document.getElementById('netIncome').value = formatCurrency(netIncome);
+                adjustmentNote.style.display = 'block';
+            } else {
+                adjustmentNote.style.display = 'none';
+            }
+
+            const result = calculate(netIncome, grossReceipts, startYear);
+
+            // Update scenario badge based on gross receipts
+            const badge = document.getElementById('scenario-badge');
+            if (grossReceipts > 100000) {
+                badge.textContent = 'Gross Receipts > $100K';
+                badge.className = 'scenario-badge scenario-a';
+            } else {
+                badge.textContent = 'Gross Receipts ≤ $100K';
+                badge.className = 'scenario-badge scenario-b';
+            }
+
+            // Update run rate summary (annual tax increase vs 2024 baseline)
+            document.getElementById('run-rate-amount').textContent = '↑' + formatCurrency(result.annualTaxIncrease);
+
+            // Update impact summary (shock year cash increase vs prior year)
+            document.getElementById('impact-amount').textContent = '↑' + formatCurrency(result.shockCashIncrease);
+            document.getElementById('impact-detail').textContent =
+                `Comparing ${result.shockYear} to ${result.shockYear - 1} (includes estimated payments)`;
+
+            // Show cash shock year (payment is due in April of the shock year)
+            document.getElementById('cash-shock-year').textContent = `Cash Shock Year: April ${result.shockYear}`;
+
+            // Show contextual warning - explains the shock year concept
+            const warningBox = document.getElementById('warning-box');
+            const shockYearExplanation = result.shockYear === 2026
+                ? `Estimated payments are based on your prior year's taxes. In 2025, your BIRT jumped because the exemption was removed - but your estimated payments are still based on 2024 (when BIRT was ~$0). In 2026, you pay your 2025 tax bill PLUS estimated payments based on your much higher 2025 BIRT. That's the cash shock.`
+                : `For businesses under $100K gross receipts, the shock comes a year later. In 2026, your estimated payments are based on 2025 BIRT (first year without exemption) - but you get a grace year. In 2027, you pay your 2026 tax bill PLUS estimated payments based on 2026 BIRT. That's when the full cash burden hits.`;
+            warningBox.innerHTML = `
+                <h4>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 2L1 21h22L12 2zm0 3.5L19.5 19h-15L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/>
+                    </svg>
+                    Why ${result.shockYear} is the Shock Year
+                </h4>
+                <p>${shockYearExplanation}</p>
+            `;
+            warningBox.style.display = 'block';
+
+            // Determine which years to show (from start year to 2027, max 6 years)
+            const yearsToShow = [];
+            for (let y = result.startYear; y <= 2027; y++) {
+                yearsToShow.push(y);
+            }
+
+            // Render timeline
+            const timeline = document.getElementById('timeline');
+            let timelineHtml = '';
+
+            yearsToShow.forEach(year => {
+                const taxData = result.taxLiabilities[year];
+                const cashData = result.cashFlows[year];
+                const priorTaxData = result.taxLiabilities[year - 1];
+                const isBaseline = year === 2024;
+                const isShock = year === result.shockYear;
+                timelineHtml += renderYearCard(taxData, cashData, priorTaxData, isBaseline, isShock, startYear);
+            });
+
+            timeline.innerHTML = timelineHtml;
+
+            // Show results
+            document.getElementById('results').classList.add('visible');
+
+            // Gentle scroll - bring results header into view, accounting for sticky nav
+            const resultsHeader = document.querySelector('.results-header');
+            const headerRect = resultsHeader.getBoundingClientRect();
+            const navHeight = document.querySelector('.nav').offsetHeight;
+            const scrollTarget = window.scrollY + headerRect.top - navHeight - 16;
+            window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+        });
+
+        // Format input as currency on blur
+        ['netIncome', 'grossReceipts'].forEach(id => {
+            const input = document.getElementById(id);
+            input.addEventListener('blur', function() {
+                const value = parseCurrency(this.value);
+                if (value > 0) {
+                    this.value = formatCurrency(value);
+                }
+            });
+            input.addEventListener('focus', function() {
+                const value = parseCurrency(this.value);
+                if (value > 0) {
+                    this.value = value;
+                }
+            });
+        });
+
+        // Year picker elements
+        const yearPicker = document.getElementById('year-picker');
+        const yearQuestion = document.getElementById('year-question');
+        const yearContinueBtn = document.getElementById('year-continue-btn');
+        const revenueSection = document.getElementById('revenue-section');
+        const yearOptions = document.querySelectorAll('.start-year-option');
+        const startYearRadios = document.querySelectorAll('input[name="startYear"]');
+
+        let isYearCollapsed = false;
+
+        // Enable continue button when a year is selected
+        startYearRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                yearContinueBtn.disabled = false;
+            });
+        });
+
+        // Collapse year picker - hide unselected options, keep selected
+        function collapseYearPicker() {
+            const selectedYear = document.querySelector('input[name="startYear"]:checked').value;
+            const selectedOption = document.querySelector(`.start-year-option[data-year="${selectedYear}"]`);
+            const selectedLabel = selectedOption.querySelector('.start-year-label');
+
+            // Update label to "Started in [year]"
+            if (selectedYear === '2022') {
+                selectedLabel.textContent = 'Started in 2022 or earlier';
+            } else {
+                selectedLabel.textContent = `Started in ${selectedYear}`;
+            }
+
+            // Hide question and continue button
+            yearQuestion.classList.add('collapsed');
+            yearContinueBtn.classList.add('collapsed');
+
+            // Collapse unselected options
+            yearOptions.forEach(option => {
+                if (option.dataset.year !== selectedYear) {
+                    option.classList.add('collapsed');
+                }
+            });
+
+            yearPicker.classList.add('collapsed');
+            isYearCollapsed = true;
+
+            // Show revenue section
+            revenueSection.style.display = 'block';
+        }
+
+        // Expand year picker - show all options
+        function expandYearPicker() {
+            // Restore original labels
+            yearOptions.forEach(option => {
+                const label = option.querySelector('.start-year-label');
+                const year = option.dataset.year;
+                if (year === '2022') {
+                    label.textContent = '2022 or earlier';
+                } else {
+                    label.textContent = year;
+                }
+            });
+
+            // Show question and continue button
+            yearQuestion.classList.remove('collapsed');
+            yearContinueBtn.classList.remove('collapsed');
+
+            // Expand all options
+            yearOptions.forEach(option => {
+                option.classList.remove('collapsed');
+            });
+
+            yearPicker.classList.remove('collapsed');
+            isYearCollapsed = false;
+        }
+
+        // Handle continue button
+        yearContinueBtn.addEventListener('click', collapseYearPicker);
+
+        // Handle clicking on selected year to toggle expand/collapse
+        yearOptions.forEach(option => {
+            option.addEventListener('click', function(e) {
+                if (isYearCollapsed) {
+                    // If collapsed, expand the picker
+                    e.preventDefault();
+                    expandYearPicker();
+                }
+            });
+        });
+
+        // When year changes, auto-recalculate if results visible
+        startYearRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                // If results are visible, recalculate
+                if (document.getElementById('results').classList.contains('visible')) {
+                    // Collapse the picker
+                    collapseYearPicker();
+                    // Trigger recalculation
+                    document.getElementById('calculator-form').dispatchEvent(new Event('submit'));
+                }
+            });
+        });
+
+        // Scroll to breakdown link handler
+        document.getElementById('scroll-to-breakdown').addEventListener('click', function(e) {
+            e.preventDefault();
+            const timelineSection = document.getElementById('timeline-section');
+            const rect = timelineSection.getBoundingClientRect();
+            const scrollTarget = window.scrollY + rect.top - 20;
+            window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
