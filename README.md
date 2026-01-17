@@ -1,6 +1,8 @@
 # Philadelphia Business Tax Calculator
 
-A tool to help Philadelphia small business owners understand how the removal of the $100K BIRT exemption will affect their taxes starting in 2026.
+**Starting in 2026, the $100K small business tax exemption disappears.** 122,000 Philadelphia small business owners will face a new—and probably surprise—tax bill.
+
+This calculator helps you understand exactly how much more you'll owe.
 
 **[Live Calculator](https://liftphilly.org/calculator/)** | **[Test Scenarios](https://liftphilly.org/calculator/test-results/)**
 
@@ -22,7 +24,7 @@ A tool to help Philadelphia small business owners understand how the removal of 
 | 2026 | 5.65% | 0.1395% | 3.735% |
 | 2027 | 5.60% | 0.139% | 3.73% |
 
-**$100K Exemption**: Applied to gross receipts and net income (via statutory deduction) through 2024. **Removed starting 2025.**
+**The $100K exemption** shielded small businesses from BIRT on gross receipts and reduced taxable net income through 2024. **In 2026, that shield is gone.**
 
 ## How the Math Works
 
@@ -127,11 +129,11 @@ Total Tax = BIRT Tax + NPT (after credit)
     └── scenario_*.png  # Baseline screenshots
 ```
 
-## About LIFT Philly
+## Join the Coalition
 
-LIFT (Lowering the Impact of Fees and Taxes) is a coalition of Philadelphia small business owners advocating for fair tax policy.
+122,000 working families, tradespeople, caregivers, gig workers, and creative entrepreneurs are facing this tax increase. LIFT Philly is a coalition supporting tax reform for Philadelphia's small business owners.
 
-Learn more at [liftphilly.org](https://liftphilly.org)
+**[Join the coalition at liftphilly.org](https://liftphilly.org)**
 
 ## License
 
