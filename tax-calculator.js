@@ -7,7 +7,7 @@
         2020: { birtNI: 0.0599, birtGR: 0.001415, npt: 0.0379 },
         2021: { birtNI: 0.0599, birtGR: 0.001415, npt: 0.0379 },
         2022: { birtNI: 0.0599, birtGR: 0.001415, npt: 0.0379 },
-        2023: { birtNI: 0.0581, birtGR: 0.00141, npt: 0.0375 },
+        2023: { birtNI: 0.0581, birtGR: 0.001415, npt: 0.0375 },
         2024: { birtNI: 0.0581, birtGR: 0.001415, npt: 0.0375 },
         2025: { birtNI: 0.0571, birtGR: 0.00141, npt: 0.0374 },
         2026: { birtNI: 0.0565, birtGR: 0.001395, npt: 0.03735 },
