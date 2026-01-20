@@ -1317,6 +1317,23 @@
         </div>
     </footer>
 
+    <!-- Disclaimer Modal -->
+    <dialog id="disclaimerModal" onclick="if(event.target===this)this.close()" style="border: none; border-radius: 16px; padding: 32px; width: calc(100% - 48px); max-width: 420px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); inset: 0; margin: auto;">
+        <div style="text-align: center;">
+            <div style="width: 48px; height: 48px; background: #fef3c7; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px;">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+            </div>
+            <h3 style="font-size: 1.25rem; font-weight: 700; color: var(--navy); margin-bottom: 12px;">Important Disclaimer</h3>
+            <p style="color: var(--text); line-height: 1.6; margin-bottom: 24px;">This resource is not intended to be legal advice and your legal and tax advisors should be consulted.<br><br>The LIFT class does not include S-Corp and C-Corp entities.</p>
+            <button id="disclaimerAccept" style="width: 100%; padding: 14px 24px; background: var(--navy); color: white; border: none; border-radius: 8px; font-weight: 600; font-size: 1rem; cursor: pointer; transition: background 0.2s;">I Understand, Continue</button>
+        </div>
+        <button onclick="disclaimerModal.close()" style="position: absolute; top: 12px; right: 12px; background: none; border: none; font-size: 1.5rem; cursor: pointer; color: var(--text-light);">×</button>
+    </dialog>
+
     <!-- Load shared tax calculator module (single source of truth) -->
     <script src="/calculator/tax-calculator.js"></script>
 
@@ -1709,8 +1726,16 @@
             isYearCollapsed = false;
         }
 
-        // Handle continue button
-        yearContinueBtn.addEventListener('click', collapseYearPicker);
+        // Handle continue button - show disclaimer modal first
+        yearContinueBtn.addEventListener('click', function() {
+            disclaimerModal.showModal();
+        });
+
+        // Handle disclaimer accept - proceed with collapse
+        document.getElementById('disclaimerAccept').addEventListener('click', function() {
+            disclaimerModal.close();
+            collapseYearPicker();
+        });
 
         // Handle clicking on selected year to toggle expand/collapse
         yearOptions.forEach(option => {
