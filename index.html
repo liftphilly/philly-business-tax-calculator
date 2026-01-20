@@ -265,12 +265,18 @@
                 display: none;
                 position: absolute;
                 top: 100%;
-                left: 0;
-                right: 0;
+                right: 16px;
+                left: auto;
                 background: var(--navy-light);
                 flex-direction: column;
                 gap: 0;
-                padding: 16px 0;
+                padding: 12px 0;
+                margin-top: 8px;
+                border: 1px solid rgba(255,255,255,0.15);
+                border-radius: 8px;
+                box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+                min-width: 200px;
+                z-index: 1000;
             }
 
             .nav-links.open {
@@ -283,7 +289,16 @@
 
             .nav-links a {
                 display: block;
-                padding: 12px 24px;
+                padding: 10px 16px;
+                color: rgba(255,255,255,0.8);
+                font-size: 0.9rem;
+                transition: all 0.15s;
+            }
+
+            .nav-links a:hover,
+            .nav-links a.active {
+                background: rgba(251,191,36,0.15);
+                color: var(--gold);
             }
 
             .nav-toggle {
