@@ -1373,70 +1373,13 @@
             parseCurrency,
             calculateTaxableAmounts,
             calculateTaxLiability,
-            calculateCashFlow: sharedCalculateCashFlow
+            calculateCashFlow: sharedCalculateCashFlow,
+            calculateFullScenario
         } = window.TaxCalculator;
 
-        // Main calculation function
+        // Main calculation function - delegates to shared module
         function calculate(netIncome, grossReceipts, startYear) {
-            const startYearInt = parseInt(startYear);
-
-            // Calculate tax liabilities for all years (including 2021 for 2022 cash flow)
-            const taxLiabilities = {};
-            for (let year = 2021; year <= 2027; year++) {
-                const businessExisted = year >= startYearInt;
-                taxLiabilities[year] = calculateTaxLiability(netIncome, grossReceipts, year, businessExisted);
-            }
-
-            // Calculate cash flows for all years (starting 2022 now that we have 2021 data)
-            const cashFlows = {};
-            for (let year = 2022; year <= 2027; year++) {
-                cashFlows[year] = sharedCalculateCashFlow(taxLiabilities, year, startYear);
-            }
-
-            // Shock year determination:
-            // If Gross Receipts ≤ $100K: Shock Year = 2027
-            // Else: Shock Year = 2026
-            const shockYear = grossReceipts <= 100000 ? 2027 : 2026;
-
-            // Baseline is always 2024 (last year with exemption)
-            const baseline2024Tax = taxLiabilities[2024];
-
-            // 2025 tax for run rate comparison
-            const tax2025 = taxLiabilities[2025];
-
-            // Shock year cash flow and prior year for comparison
-            const shockCash = cashFlows[shockYear] || { totalCashBurden: 0 };
-            const priorToShockCash = cashFlows[shockYear - 1] || { totalCashBurden: 0 };
-
-            // Annual tax increase = 2025 tax due - 2024 tax due
-            const annualTaxIncrease = tax2025.totalTax - baseline2024Tax.totalTax;
-
-            // Two ways exemption removal harms a business:
-            // 1. Cash Shock = Total Cash Outlay difference (immediate cash needed)
-            // 2. Working Cash Shock = Estimated BIRT difference (money City holds as working capital)
-            const cashShock = shockCash.totalCashBurden - priorToShockCash.totalCashBurden;
-            const workingCashShock = (shockCash.estBIRT || 0) - (priorToShockCash.estBIRT || 0);
-
-            // Take MAX - show whichever impact is larger (cash shock wins ties)
-            const shockAmount = Math.max(cashShock, workingCashShock);
-            const shockType = cashShock >= workingCashShock ? 'cash' : 'working';
-
-            return {
-                startYear: startYearInt,
-                shockYear,
-                taxLiabilities,
-                cashFlows,
-                baseline2024Tax,
-                annualTaxIncrease,
-                shockAmount,
-                shockType,
-                cashShock,
-                workingCashShock,
-                shockCash,
-                priorToShockCash,
-                grossReceipts,
-                netIncome
-            };
+            return calculateFullScenario(netIncome, grossReceipts, startYear);
         }
 
         // Render year card with two boxes: Tax Liability and Tax Due for Payment

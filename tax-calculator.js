@@ -191,52 +191,80 @@
         };
     }
 
-    // Calculate shock year impact for a scenario
-    // Returns MAX of cash shock vs working cash shock
-    function calculateShockIncrease(netIncome, grossReceipts, startYear) {
+    // Calculate full scenario - comprehensive calculation for main calculator
+    // Returns everything needed for display: tax liabilities, cash flows, shock analysis
+    function calculateFullScenario(netIncome, grossReceipts, startYear) {
         const startYearInt = parseInt(startYear);
 
-        // Calculate tax liabilities for all years
+        // Calculate tax liabilities for all years (2021 needed for 2022 cash flow)
         const taxLiabilities = {};
-        for (let year = 2020; year <= 2027; year++) {
+        for (let year = 2021; year <= 2027; year++) {
             const businessExisted = year >= startYearInt;
             taxLiabilities[year] = calculateTaxLiability(netIncome, grossReceipts, year, businessExisted);
         }
 
-        // Calculate cash flows
+        // Calculate cash flows for all years
         const cashFlows = {};
-        for (let year = 2021; year <= 2027; year++) {
+        for (let year = 2022; year <= 2027; year++) {
             cashFlows[year] = calculateCashFlow(taxLiabilities, year, startYear);
         }
 
         // Shock year: 2027 if gross <= $100K, else 2026
         const shockYear = grossReceipts <= 100000 ? 2027 : 2026;
 
-        const shockCash = cashFlows[shockYear];
-        const priorCash = cashFlows[shockYear - 1];
+        // Baseline and comparison years
+        const baseline2024Tax = taxLiabilities[2024];
+        const tax2025 = taxLiabilities[2025];
+        const annualTaxIncrease = tax2025.totalTax - baseline2024Tax.totalTax;
+
+        // Shock year analysis
+        const shockCash = cashFlows[shockYear] || { totalCashBurden: 0, estBIRT: 0 };
+        const priorToShockCash = cashFlows[shockYear - 1] || { totalCashBurden: 0, estBIRT: 0 };
 
         // Two ways exemption removal harms a business:
         // 1. Cash Shock = Total Cash Outlay difference (immediate cash needed)
         // 2. Working Cash Shock = Estimated BIRT difference (money City holds as working capital)
-        const cashShock = shockCash.totalCashBurden - priorCash.totalCashBurden;
-        const workingCashShock = (shockCash.estBIRT || 0) - (priorCash.estBIRT || 0);
+        const cashShock = shockCash.totalCashBurden - priorToShockCash.totalCashBurden;
+        const workingCashShock = (shockCash.estBIRT || 0) - (priorToShockCash.estBIRT || 0);
 
         // Take MAX - show whichever impact is larger (cash shock wins ties)
         const shockAmount = Math.max(cashShock, workingCashShock);
         const shockType = cashShock >= workingCashShock ? 'cash' : 'working';
 
         return {
+            startYear: startYearInt,
             shockYear,
+            taxLiabilities,
+            cashFlows,
+            baseline2024Tax,
+            annualTaxIncrease,
             shockAmount,
             shockType,
             cashShock,
             workingCashShock,
-            // Keep legacy field for backwards compatibility
-            shockIncrease: shockAmount,
-            shockCashBurden: shockCash.totalCashBurden,
-            priorCashBurden: priorCash.totalCashBurden,
             shockCash,
-            priorCash
+            priorToShockCash,
+            grossReceipts,
+            netIncome
+        };
+    }
+
+    // Calculate shock year impact for a scenario (lightweight version)
+    // Used by test-results page - returns just shock analysis without full data
+    function calculateShockIncrease(netIncome, grossReceipts, startYear) {
+        const result = calculateFullScenario(netIncome, grossReceipts, startYear);
+        return {
+            shockYear: result.shockYear,
+            shockAmount: result.shockAmount,
+            shockType: result.shockType,
+            cashShock: result.cashShock,
+            workingCashShock: result.workingCashShock,
+            // Keep legacy field for backwards compatibility
+            shockIncrease: result.shockAmount,
+            shockCashBurden: result.shockCash.totalCashBurden,
+            priorCashBurden: result.priorToShockCash.totalCashBurden,
+            shockCash: result.shockCash,
+            priorCash: result.priorToShockCash
         };
     }
 
@@ -349,9 +377,15 @@
             html += `<div class="flowchart-divider"></div>`;
             html += `<div class="flowchart-step"><span class="label" style="font-weight: 600;">Total Cash ${shockYear}:</span><span class="formula">${formatCurrency(shockCash.taxDue)} + ${formatCurrency(shockCash.estBIRT)} + ${formatCurrency(shockCash.estNPT)} + ${formatCurrency(shockCash.adjustment)}</span><span class="value" style="font-weight: 700;">${formatCurrency(shockCash.totalCashBurden)}</span></div>`;
 
-            // Shock year increase summary
-            const shockIncrease = shockCash.totalCashBurden - priorCash.totalCashBurden;
-            html += `<div class="flowchart-step flowchart-result" style="background: #fef2f2; margin-top: 12px;"><span class="label" style="font-weight: 700;">↑ Shock Year Increase:</span><span class="formula">${formatCurrency(shockCash.totalCashBurden)} - ${formatCurrency(priorCash.totalCashBurden)}</span><span class="value" style="font-size: 1.1rem;">${formatCurrency(shockIncrease)}</span></div>`;
+            // Shock year increase summary - show both types and indicate winner
+            const cashShock = shockCash.totalCashBurden - priorCash.totalCashBurden;
+            const workingCashShock = (shockCash.estBIRT || 0) - (priorCash.estBIRT || 0);
+            const shockAmount = Math.max(cashShock, workingCashShock);
+            const shockType = cashShock >= workingCashShock ? 'cash' : 'working';
+
+            html += `<div class="flowchart-step" style="margin-top: 12px;"><span class="label">Cash Shock:</span><span class="formula">${formatCurrency(shockCash.totalCashBurden)} - ${formatCurrency(priorCash.totalCashBurden)}</span><span class="value">${formatCurrency(cashShock)}${shockType === 'cash' ? ' ✓' : ''}</span></div>`;
+            html += `<div class="flowchart-step"><span class="label">Working Cash Shock:</span><span class="formula">${formatCurrency(shockCash.estBIRT || 0)} - ${formatCurrency(priorCash.estBIRT || 0)}</span><span class="value">${formatCurrency(workingCashShock)}${shockType === 'working' ? ' ✓' : ''}</span></div>`;
+            html += `<div class="flowchart-step flowchart-result" style="background: #fef2f2; margin-top: 8px;"><span class="label" style="font-weight: 700;">↑ Shock Year Impact (MAX):</span><span class="formula">${shockType === 'cash' ? 'Cash Shock' : 'Working Cash Shock'}</span><span class="value" style="font-size: 1.1rem;">${formatCurrency(shockAmount)}</span></div>`;
         }
 
         return html;
@@ -369,6 +403,7 @@
         calculateTaxableAmounts,
         calculateTaxLiability,
         calculateCashFlow,
+        calculateFullScenario,
         calculateShockIncrease,
         generateFlowchartHTML
     };
