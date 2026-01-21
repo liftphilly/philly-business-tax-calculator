@@ -377,7 +377,7 @@
     <div class="nav-controls">
         <button class="nav-btn" id="prev-btn" onclick="navigate(-1)">&#8592;</button>
         <div>
-            <div class="scenario-indicator" id="indicator">Scenario 1 of 6</div>
+            <div class="scenario-indicator" id="indicator">Scenario 1 of 12</div>
             <div class="scenario-dots" id="dots"></div>
         </div>
         <button class="nav-btn" id="next-btn" onclick="navigate(1)">&#8594;</button>
@@ -402,16 +402,21 @@
     <script>
         // Test scenarios - change these and the flowcharts update automatically
         const SCENARIOS = [
+            // 2022 start year (established businesses)
             { id: 1, startYear: 2022, grossReceipts: 50000, netIncome: 50000 },
             { id: 2, startYear: 2022, grossReceipts: 110000, netIncome: 50000 },
             { id: 3, startYear: 2022, grossReceipts: 250000, netIncome: 100000 },
             { id: 4, startYear: 2022, grossReceipts: 200000, netIncome: 50000 },
+            // 2023 start year (newer businesses)
             { id: 5, startYear: 2023, grossReceipts: 50000, netIncome: 50000 },
             { id: 6, startYear: 2023, grossReceipts: 110000, netIncome: 50000 },
             { id: 7, startYear: 2023, grossReceipts: 250000, netIncome: 100000 },
             { id: 8, startYear: 2023, grossReceipts: 200000, netIncome: 50000 },
-            { id: 9, startYear: 2024, grossReceipts: 110000, netIncome: 50000 },
-            { id: 10, startYear: 2024, grossReceipts: 50000, netIncome: 50000 }
+            // 2024 start year (grace year businesses)
+            { id: 9, startYear: 2024, grossReceipts: 50000, netIncome: 50000 },
+            { id: 10, startYear: 2024, grossReceipts: 110000, netIncome: 50000 },
+            { id: 11, startYear: 2024, grossReceipts: 250000, netIncome: 100000 },
+            { id: 12, startYear: 2024, grossReceipts: 200000, netIncome: 50000 }
         ];
 
         const { formatCurrency, calculateTaxLiability, calculateShockIncrease, generateFlowchartHTML } = window.TaxCalculator;
