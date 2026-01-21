@@ -365,6 +365,7 @@
                     <th>Annual ↑</th>
                     <th>Shock ↑</th>
                     <th>Shock Yr</th>
+                    <th>Type</th>
                 </tr>
             </thead>
             <tbody id="comparison-tbody">
@@ -424,7 +425,10 @@
             return {
                 annualIncrease,
                 shockIncrease: shockResult.shockIncrease,
-                shockYear: shockResult.shockYear
+                shockYear: shockResult.shockYear,
+                shockType: shockResult.shockType,
+                cashShock: shockResult.cashShock,
+                workingCashShock: shockResult.workingCashShock
             };
         }
 
@@ -442,6 +446,7 @@
                         <td>↑${formatCurrency(summary.annualIncrease)}</td>
                         <td class="negative">↑${formatCurrency(summary.shockIncrease)}</td>
                         <td>${summary.shockYear}</td>
+                        <td>${summary.shockType === 'cash' ? '💰 Cash' : '🏦 Working'}</td>
                     </tr>
                 `;
             }).join('');
@@ -472,8 +477,12 @@
                                         <span class="summary-value">+${formatCurrency(summary.annualIncrease)}</span>
                                     </div>
                                     <div class="summary-row">
-                                        <span class="summary-label">Shock Year (April ${summary.shockYear})</span>
+                                        <span class="summary-label">${summary.shockType === 'cash' ? 'Shock Year Tax Increase' : 'Shock Year BIRT Est. Payment Increase'} (April ${summary.shockYear})</span>
                                         <span class="summary-value negative">+${formatCurrency(summary.shockIncrease)}</span>
+                                    </div>
+                                    <div class="summary-row" style="font-size: 0.85rem; opacity: 0.8;">
+                                        <span class="summary-label">Shock Type</span>
+                                        <span class="summary-value">${summary.shockType === 'cash' ? '💰 Cash Shock' : '🏦 Working Cash Shock'}</span>
                                     </div>
                                 </div>
                                 <button class="flowchart-toggle" onclick="toggleFlowchart(${s.id})">Hide Calculation Breakdown</button>

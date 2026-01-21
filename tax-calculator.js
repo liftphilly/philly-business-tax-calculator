@@ -191,7 +191,8 @@
         };
     }
 
-    // Calculate shock year cash increase for a scenario
+    // Calculate shock year impact for a scenario
+    // Returns MAX of cash shock vs working cash shock
     function calculateShockIncrease(netIncome, grossReceipts, startYear) {
         const startYearInt = parseInt(startYear);
 
@@ -211,15 +212,31 @@
         // Shock year: 2027 if gross <= $100K, else 2026
         const shockYear = grossReceipts <= 100000 ? 2027 : 2026;
 
-        // Shock increase = shock year cash burden - prior year cash burden
         const shockCash = cashFlows[shockYear];
         const priorCash = cashFlows[shockYear - 1];
 
+        // Two ways exemption removal harms a business:
+        // 1. Cash Shock = Total Cash Outlay difference (immediate cash needed)
+        // 2. Working Cash Shock = Estimated BIRT difference (money City holds as working capital)
+        const cashShock = shockCash.totalCashBurden - priorCash.totalCashBurden;
+        const workingCashShock = (shockCash.estBIRT || 0) - (priorCash.estBIRT || 0);
+
+        // Take MAX - show whichever impact is larger (cash shock wins ties)
+        const shockAmount = Math.max(cashShock, workingCashShock);
+        const shockType = cashShock >= workingCashShock ? 'cash' : 'working';
+
         return {
             shockYear,
-            shockIncrease: shockCash.totalCashBurden - priorCash.totalCashBurden,
+            shockAmount,
+            shockType,
+            cashShock,
+            workingCashShock,
+            // Keep legacy field for backwards compatibility
+            shockIncrease: shockAmount,
             shockCashBurden: shockCash.totalCashBurden,
-            priorCashBurden: priorCash.totalCashBurden
+            priorCashBurden: priorCash.totalCashBurden,
+            shockCash,
+            priorCash
         };
     }
 
