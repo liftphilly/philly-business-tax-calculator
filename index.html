@@ -1256,7 +1256,7 @@
                     </div>
 
                     <div class="impact-summary">
-                        <h3>Your Shock Year Tax Increase</h3>
+                        <h3 id="impact-title">Your Shock Year Tax Increase</h3>
                         <div id="impact-amount" class="impact-amount"></div>
                         <p id="impact-detail" class="impact-detail"></p>
                         <p id="cash-shock-year" class="cash-shock-year"></p>
@@ -1411,8 +1411,15 @@
             // Annual tax increase = 2025 tax due - 2024 tax due
             const annualTaxIncrease = tax2025.totalTax - baseline2024Tax.totalTax;
 
-            // Shock year cash increase = shock year cash burden - prior year cash burden
-            const shockCashIncrease = shockCash.totalCashBurden - priorToShockCash.totalCashBurden;
+            // Two ways exemption removal harms a business:
+            // 1. Cash Shock = Total Cash Outlay difference (immediate cash needed)
+            // 2. Working Cash Shock = Estimated BIRT difference (money City holds as working capital)
+            const cashShock = shockCash.totalCashBurden - priorToShockCash.totalCashBurden;
+            const workingCashShock = (shockCash.estBIRT || 0) - (priorToShockCash.estBIRT || 0);
+
+            // Take MAX - show whichever impact is larger (cash shock wins ties)
+            const shockAmount = Math.max(cashShock, workingCashShock);
+            const shockType = cashShock >= workingCashShock ? 'cash' : 'working';
 
             return {
                 startYear: startYearInt,
@@ -1421,7 +1428,12 @@
                 cashFlows,
                 baseline2024Tax,
                 annualTaxIncrease,
-                shockCashIncrease,
+                shockAmount,
+                shockType,
+                cashShock,
+                workingCashShock,
+                shockCash,
+                priorToShockCash,
                 grossReceipts,
                 netIncome
             };
@@ -1604,19 +1616,37 @@
             // Update run rate summary (annual tax increase vs 2024 baseline)
             document.getElementById('run-rate-amount').textContent = '↑' + formatCurrency(result.annualTaxIncrease);
 
-            // Update impact summary (shock year cash increase vs prior year)
-            document.getElementById('impact-amount').textContent = '↑' + formatCurrency(result.shockCashIncrease);
-            document.getElementById('impact-detail').textContent =
-                `Comparing ${result.shockYear} to ${result.shockYear - 1} (includes estimated payments)`;
+            // Update impact summary based on shock type (MAX of cash shock vs working cash shock)
+            document.getElementById('impact-amount').textContent = '↑' + formatCurrency(result.shockAmount);
 
-            // Show cash shock year (payment is due in April of the shock year)
-            document.getElementById('cash-shock-year').textContent = `Cash Shock Year: April ${result.shockYear}`;
+            if (result.shockType === 'cash') {
+                // Cash Shock is larger - show total cash outlay comparison
+                document.getElementById('impact-title').textContent = 'Your Shock Year Tax Increase';
+                document.getElementById('impact-detail').textContent =
+                    `Comparing ${result.shockYear} to ${result.shockYear - 1} (includes estimated payments)`;
+                document.getElementById('cash-shock-year').textContent = `Cash Shock Year: April ${result.shockYear}`;
+            } else {
+                // Working Cash Shock (BIRT estimate jump) is larger
+                document.getElementById('impact-title').textContent = 'Your Shock Year BIRT Estimated Payment Increase';
+                document.getElementById('impact-detail').textContent =
+                    `The jump in the BIRT estimate from ${result.shockYear - 1} to ${result.shockYear} is new working cash the City now requires you to keep with them.`;
+                document.getElementById('cash-shock-year').textContent = `Estimated Payment Shock Year: April ${result.shockYear}`;
+            }
 
             // Show contextual warning - explains the shock year concept
             const warningBox = document.getElementById('warning-box');
-            const shockYearExplanation = result.shockYear === 2026
-                ? `Estimated payments are based on your prior year's taxes. In 2025, your BIRT jumped because the exemption was removed - but your estimated payments are still based on 2024 (when BIRT was ~$0). In 2026, you pay your 2025 tax bill PLUS estimated payments based on your much higher 2025 BIRT. That's the cash shock.`
-                : `For businesses under $100K gross receipts, the shock comes a year later. In 2026, your estimated payments are based on 2025 BIRT (first year without exemption) - but you get a grace year. In 2027, you pay your 2026 tax bill PLUS estimated payments based on 2026 BIRT. That's when the full cash burden hits.`;
+            let shockYearExplanation;
+
+            if (result.shockType === 'cash') {
+                // Cash shock explanation
+                shockYearExplanation = result.shockYear === 2026
+                    ? `Estimated payments are based on your prior year's taxes. In 2025, your BIRT jumped because the exemption was removed - but your estimated payments are still based on 2024 (when BIRT was ~$0). In 2026, you pay your 2025 tax bill PLUS estimated payments based on your much higher 2025 BIRT. That's the cash shock.`
+                    : `For businesses under $100K gross receipts, the shock comes a year later. In 2026, your estimated payments are based on 2025 BIRT (first year without exemption) - but you get a grace year. In 2027, you pay your 2026 tax bill PLUS estimated payments based on 2026 BIRT. That's when the full cash burden hits.`;
+            } else {
+                // Working cash shock explanation
+                shockYearExplanation = `The City requires estimated tax payments based on your prior year. When the BIRT exemption was removed, your estimated BIRT payment jumped from ${formatCurrency(result.priorToShockCash.estBIRT || 0)} to ${formatCurrency(result.shockCash.estBIRT || 0)}. This ${formatCurrency(result.workingCashShock)} increase is working capital the City now permanently holds - money you've earned but can't use until you file your next return.`;
+            }
+
             warningBox.innerHTML = `
                 <h4>
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
