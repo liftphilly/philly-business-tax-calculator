@@ -118,28 +118,15 @@ Total Tax = BIRT Tax + NPT (after credit)
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-## S-Corp vs LLC Simulator
-
-A separate interactive tool comparing S-Corp vs LLC tax outcomes under the proposed LIFT Act ([Bill No. 251026](https://liftphilly.org/petition/#sign-section)). Tests whether wealthy business owners would reclassify from S-Corp to LLC to capture the new BIRT exemption.
-
-**[Live Simulator](https://liftphilly.org/simulator/)**
-
-The simulator includes a TypeScript tax engine validated against a reference spreadsheet (79 tests, all passing).
-
 ## File Structure
 
 ```
-├── index.html                    # BIRT increase calculator page
-├── tax-calculator.js             # Calculator logic (shared module)
-├── favicon.svg                   # LIFT logo
-├── test-results/                 # Calculator verification suite
-│   ├── index.html                # Visual comparison tool
-│   └── scenario_*.png            # Baseline screenshots
-└── simulator/                    # S-Corp vs LLC simulator
-    ├── index.html                # Simulator page (self-contained)
-    ├── lift-philly-entity-model.ts      # TypeScript tax engine
-    ├── lift-philly-entity-model.test.ts  # 79 validation tests
-    └── onePhilly_scorp_vs_llc_tax_model_v10.xlsx  # Reference spreadsheet
+├── index.html          # Main calculator page
+├── tax-calculator.js   # All calculation logic (shared module)
+├── favicon.svg         # LIFT logo
+└── test-results/       # Verification test suite
+    ├── index.html      # Visual comparison tool
+    └── scenario_*.png  # Baseline screenshots
 ```
 
 ## Join the Coalition
