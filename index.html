@@ -1141,18 +1141,18 @@
     <nav class="nav">
         <div class="container">
             <a href="/" class="nav-brand">LIFT <span>Philly</span></a>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/filing-your-birt.html">Filing Your BIRT</a></li>
+                <li><a href="/calculator">Increase Calculator</a></li>
+                <li><a href="/#join">Join Coalition</a></li>
+                <li><a href="/petition" style="color:var(--gold);font-weight:700;">Sign the Petition</a></li>
+            </ul>
             <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
                 <span></span>
                 <span></span>
                 <span></span>
             </button>
-            <ul class="nav-links">
-                <li><a href="/">Home</a></li>
-                <li><a href="/filing-your-birt.html">Filing Your BIRT</a></li>
-                <li><a href="/calculator" class="active">Increase Calculator</a></li>
-                <li><a href="/#join">Join Coalition</a></li>
-                <li><a href="/petition" style="color:var(--gold);font-weight:700;">Sign the Petition</a></li>
-            </ul>
             <div class="nav-translate">
                 <button class="nav-translate-btn" onclick="toggleTranslateDropdown()">
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1189,6 +1189,28 @@
             <div id="google_translate_element"></div>
         </div>
     </nav>
+    <script>
+        (function() {
+            var path = window.location.pathname.replace(/\/$/, '') || '/';
+            document.querySelectorAll('.nav-links a').forEach(function(link) {
+                var href = link.getAttribute('href').replace(/\/$/, '') || '/';
+                if (href === path || (href !== '/' && href !== '/#join' && path.startsWith(href))) {
+                    link.classList.add('active');
+                }
+            });
+        })();
+    </script>
+    <script>
+        (function() {
+            var path = window.location.pathname.replace(/\/$/, '') || '/';
+            document.querySelectorAll('.nav-links a').forEach(function(link) {
+                var href = link.getAttribute('href').replace(/\/$/, '') || '/';
+                if (href === path || (href !== '/' && href !== '/#join' && path.startsWith(href))) {
+                    link.classList.add('active');
+                }
+            });
+        })();
+    </script>
 
     <!-- Hero -->
     <section class="hero">
