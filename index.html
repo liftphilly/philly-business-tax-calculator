@@ -1118,6 +1118,15 @@
             document.querySelector('.nav-links').classList.toggle('open');
         }
 
+        function closeNav() {
+            document.querySelector('.nav-toggle').classList.remove('open');
+            document.querySelector('.nav-links').classList.remove('open');
+        }
+
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', closeNav);
+        });
+
         document.addEventListener('click', function(e) {
             var translateDropdown = document.querySelector('.nav-translate');
             if (translateDropdown && !translateDropdown.contains(e.target)) {
