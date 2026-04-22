@@ -1,6 +1,6 @@
 # Philadelphia Business Tax Calculator
 
-**Starting in 2026, the $100K small business tax exemption disappears.** 122,000 Philadelphia small business owners will face a new—and probably surprise—tax bill.
+**Starting in 2026, the $100K small business tax exemption disappears.** 75,000 Philadelphia small business owners will face a new—and probably surprise—tax bill.
 
 This calculator helps you understand exactly how much more you'll owe.
 
@@ -131,7 +131,7 @@ Total Tax = BIRT Tax + NPT (after credit)
 
 ## Join the Coalition
 
-122,000 working families, tradespeople, caregivers, gig workers, and creative entrepreneurs are facing this tax increase. LIFT Philly is a coalition supporting tax reform for Philadelphia's small business owners.
+75,000 working families, tradespeople, caregivers, gig workers, and creative entrepreneurs are facing this tax increase. LIFT Philly is a coalition supporting tax reform for Philadelphia's small business owners.
 
 **[Join the coalition at liftphilly.org](https://liftphilly.org)**
 
