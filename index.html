@@ -1794,6 +1794,30 @@
             });
         });
 
+        // Query string pre-fill: ?year=2024&net=50000&gross=75000
+        (function() {
+            const params = new URLSearchParams(window.location.search);
+            const year = params.get('year');
+            const net = params.get('net');
+            const gross = params.get('gross');
+            if (!year || !net || !gross) return;
+
+            const radio = document.querySelector(`input[name="startYear"][value="${year}"]`);
+            if (!radio) return;
+
+            radio.checked = true;
+            radio.dispatchEvent(new Event('change', { bubbles: true }));
+            yearContinueBtn.disabled = false;
+
+            document.getElementById('netIncome').value = formatCurrency(parseFloat(net));
+            document.getElementById('grossReceipts').value = formatCurrency(parseFloat(gross));
+
+            collapseYearPicker();
+            setTimeout(function() {
+                document.getElementById('calculator-form').dispatchEvent(new Event('submit'));
+            }, 50);
+        })();
+
         // Scroll to breakdown link handler
         document.getElementById('scroll-to-breakdown').addEventListener('click', function(e) {
             e.preventDefault();
