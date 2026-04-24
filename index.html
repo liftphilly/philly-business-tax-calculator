@@ -1916,5 +1916,27 @@
             window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
         });
     </script>
+    <script>
+        function toggleResourcesMenu(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.currentTarget.closest('.nav-dropdown-wrap').classList.toggle('open');
+        }
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.nav-dropdown-wrap')) {
+                document.querySelectorAll('.nav-dropdown-wrap').forEach(function(el) {
+                    el.classList.remove('open');
+                });
+            }
+        });
+        (function() {
+            var path = window.location.pathname;
+            var resourcePaths = ['/explain', '/filing-your-birt', '/calculator'];
+            if (resourcePaths.some(function(p) { return path.startsWith(p); })) {
+                var wrap = document.querySelector('.nav-dropdown-wrap');
+                if (wrap) wrap.classList.add('active');
+            }
+        })();
+    </script>
 </body>
 </html>
