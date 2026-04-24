@@ -1143,8 +1143,14 @@
             <a href="/" class="nav-brand">LIFT <span>Philly</span></a>
             <ul class="nav-links">
                 <li><a href="/">Home</a></li>
-                <li><a href="/filing-your-birt.html">Filing Your BIRT</a></li>
-                <li><a href="/calculator">Increase Calculator</a></li>
+                <li class="nav-dropdown-wrap">
+                    <a href="#" class="nav-dropdown-trigger" onclick="toggleResourcesMenu(event)">Resources <svg class="nav-chevron" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg></a>
+                    <ul class="nav-submenu">
+                        <li><a href="/explain">Why It Happened</a></li>
+                        <li><a href="/filing-your-birt.html">Filing Your BIRT</a></li>
+                        <li><a href="/calculator">Increase Calculator</a></li>
+                    </ul>
+                </li>
                 <li><a href="/#join">Join Coalition</a></li>
                 <li><a href="/petition" style="color:var(--gold);font-weight:700;">Sign the Petition</a></li>
             </ul>
