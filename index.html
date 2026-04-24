@@ -1130,7 +1130,7 @@
 
         .nav-submenu li a {
             display: block !important;
-            padding: 10px 18px !important;
+            padding: 10px 24px 10px 24px !important;
             font-size: 0.9rem !important;
             white-space: nowrap;
         }
@@ -1151,11 +1151,12 @@
             }
             .nav-dropdown-wrap.collapsed .nav-submenu { display: none; }
             .nav-submenu li a {
-                padding: 10px 24px 10px 44px !important;
+                padding: 10px 24px 10px 24px !important;
                 font-size: 0.875rem !important;
             }
             .nav-dropdown-trigger { width: 100%; justify-content: space-between; }
             .nav-dropdown-wrap.collapsed .nav-chevron { transform: rotate(-90deg); }
+            .nav-links > li > a[href="/petition"] { background: var(--gold) !important; color: var(--navy) !important; border: none !important; border-radius: 6px !important; padding: 8px 16px !important; text-align: center !important; margin: 16px 24px 4px !important; display: block !important; }
         }
 </style>
 
@@ -1216,10 +1217,11 @@
                         <li><a href="/explain">Why It Happened</a></li>
                         <li><a href="/filing-your-birt.html">Filing Your BIRT</a></li>
                         <li><a href="/calculator">Increase Calculator</a></li>
+                        <li><a href="/petition">Support the Bill</a></li>
+                        <li><a href="/hearings">Tell Council Your Story</a></li>
                     </ul>
                 </li>
-                <li><a href="/#join">Join Coalition</a></li>
-                <li><a href="/petition" style="color:var(--gold);font-weight:700;">Sign the Petition</a></li>
+                <li><a href="/petition" style="color:var(--gold);font-weight:700;border:1.5px solid var(--gold);border-radius:5px;padding:5px 12px;margin:0 8px;">Sign the Petition</a></li>
             </ul>
             <button class="nav-toggle" onclick="toggleNav()" aria-label="Toggle navigation">
                 <span></span>
@@ -1262,28 +1264,6 @@
             <div id="google_translate_element"></div>
         </div>
     </nav>
-    <script>
-        (function() {
-            var path = window.location.pathname.replace(/\/$/, '') || '/';
-            document.querySelectorAll('.nav-links a').forEach(function(link) {
-                var href = link.getAttribute('href').replace(/\/$/, '') || '/';
-                if (href === path || (href !== '/' && href !== '/#join' && path.startsWith(href))) {
-                    link.classList.add('active');
-                }
-            });
-        })();
-    </script>
-    <script>
-        (function() {
-            var path = window.location.pathname.replace(/\/$/, '') || '/';
-            document.querySelectorAll('.nav-links a').forEach(function(link) {
-                var href = link.getAttribute('href').replace(/\/$/, '') || '/';
-                if (href === path || (href !== '/' && href !== '/#join' && path.startsWith(href))) {
-                    link.classList.add('active');
-                }
-            });
-        })();
-    </script>
     <script>
         (function() {
             var path = window.location.pathname.replace(/\/$/, '') || '/';
