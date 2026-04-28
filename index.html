@@ -92,6 +92,7 @@
             display: flex;
             gap: 32px;
             list-style: none;
+            align-items: center;
         }
 
         .nav-links a {
@@ -1191,7 +1192,7 @@
             document.querySelector('.nav-links').classList.remove('open');
         }
 
-        document.querySelectorAll('.nav-links a').forEach(link => {
+        document.querySelectorAll('.nav-links a:not(.nav-dropdown-trigger)').forEach(link => {
             link.addEventListener('click', closeNav);
         });
 
@@ -1203,6 +1204,7 @@
         });
     </script>
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <link rel="stylesheet" href="/nav.css">
 </head>
 <body>
     <!-- Navigation -->
@@ -1264,19 +1266,20 @@
             <div id="google_translate_element"></div>
         </div>
     </nav>
+
     <script>
         (function() {
-            var path = window.location.pathname.replace(/\/$/, '') || '/';
-            document.querySelectorAll('.nav-links a').forEach(function(link) {
-                var href = link.getAttribute('href').replace(/\/$/, '') || '/';
-                if (href === path || (href !== '/' && href !== '/#join' && path.startsWith(href))) {
-                    link.classList.add('active');
+            var path = window.location.pathname.replace(/\/$/, "") || "/";
+            document.querySelectorAll(".nav-links a").forEach(function(link) {
+                if (link.closest(".nav-submenu")) return;
+                var href = link.getAttribute("href").replace(/\/$/, "") || "/";
+                if (href === path || (href !== "/" && href !== "/#join" && path.startsWith(href))) {
+                    link.classList.add("active");
                 }
             });
         })();
     </script>
-
-    <!-- Hero -->
+<!-- Hero -->
     <section class="hero">
         <div class="container">
             <h1>Know Before <span>You File</span></h1>
