@@ -1182,20 +1182,6 @@
             document.querySelector('.nav-translate').classList.toggle('open');
         }
 
-        function toggleNav() {
-            document.querySelector('.nav-toggle').classList.toggle('open');
-            document.querySelector('.nav-links').classList.toggle('open');
-        }
-
-        function closeNav() {
-            document.querySelector('.nav-toggle').classList.remove('open');
-            document.querySelector('.nav-links').classList.remove('open');
-        }
-
-        document.querySelectorAll('.nav-links a:not(.nav-dropdown-trigger)').forEach(link => {
-            link.addEventListener('click', closeNav);
-        });
-
         document.addEventListener('click', function(e) {
             var translateDropdown = document.querySelector('.nav-translate');
             if (translateDropdown && !translateDropdown.contains(e.target)) {
@@ -1267,18 +1253,6 @@
         </div>
     </nav>
 
-    <script>
-        (function() {
-            var path = window.location.pathname.replace(/\/$/, "") || "/";
-            document.querySelectorAll(".nav-links a").forEach(function(link) {
-                if (link.closest(".nav-submenu")) return;
-                var href = link.getAttribute("href").replace(/\/$/, "") || "/";
-                if (href === path || (href !== "/" && href !== "/#join" && path.startsWith(href))) {
-                    link.classList.add("active");
-                }
-            });
-        })();
-    </script>
 <!-- Hero -->
     <section class="hero">
         <div class="container">
@@ -1900,32 +1874,7 @@
             window.scrollTo({ top: scrollTarget, behavior: 'smooth' });
         });
     </script>
-    <script>
-        function toggleResourcesMenu(e) {
-            e.preventDefault();
-            e.stopPropagation();
-            var wrap = e.currentTarget.closest('.nav-dropdown-wrap');
-            if (window.innerWidth <= 768) {
-                wrap.classList.toggle('collapsed');
-            } else {
-                wrap.classList.toggle('open');
-            }
-        }
-        document.addEventListener('click', function(e) {
-            if (window.innerWidth > 768 && !e.target.closest('.nav-dropdown-wrap')) {
-                document.querySelectorAll('.nav-dropdown-wrap').forEach(function(el) {
-                    el.classList.remove('open');
-                });
-            }
-        });
-        (function() {
-            var path = window.location.pathname;
-            var resourcePaths = ['/explain', '/filing-your-birt', '/calculator'];
-            if (resourcePaths.some(function(p) { return path.startsWith(p); })) {
-                var wrap = document.querySelector('.nav-dropdown-wrap');
-                if (wrap) wrap.classList.add('active');
-            }
-        })();
-    </script>
+
+    <script src="/nav.js"></script>
 </body>
 </html>
